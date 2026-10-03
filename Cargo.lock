@@ -108,7 +108,6 @@ dependencies = [
  "gif",
  "image",
  "wasm-bindgen",
- "whereat",
  "zenwebp",
 ]
 

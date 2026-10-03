@@ -266,10 +266,8 @@ fn detect_webp_is_lossy(d: &[u8]) -> Option<bool> {
 }
 
 
-// ---------------------------------------------------------------------------
-// GIF delay helper
-// ---------------------------------------------------------------------------
-
+/// This calculates de delay for a given gif. It helps us determine how many frames per
+/// second we use.
 fn gif_delay_to_ms(delay_cs: u16) -> u32 {
 	if delay_cs == 0 {
 		100
