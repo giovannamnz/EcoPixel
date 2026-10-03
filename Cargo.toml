@@ -17,3 +17,6 @@ opt-level = 3      # use "s" if bundle size matters more than speed
 lto = true
 codegen-units = 1
 panic = "abort"
+
+[dev-dependencies]
+wasm-bindgen-test = "=0.3"
