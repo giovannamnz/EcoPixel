@@ -3,6 +3,9 @@ use std::io::Cursor;
 use wasm_bindgen::prelude::*;
 use zenwebp::{EncodeRequest, LosslessConfig, LossyConfig, PixelLayout};
 
+#[cfg(test)]
+mod tests;
+
 /// Constants. These are mostly used to determine how much we saved,
 /// and to determine if a possible conversion should be either lossy or lossles.
 
@@ -18,7 +21,6 @@ const MAX_LOSSY_QUALITY: u8 = 90;
 fn estimate_transfer_co2_grams(bytes: u32) -> f64 {
 	bytes as f64 / BYTES_PER_GB * KWH_PER_GB * GRID_G_CO2_PER_KWH
 }
-
 
 /// Luminance patter for jpeg. We use it how much lossy a jpeg is.
 const STD_LUMA: [u32; 64] = [
@@ -37,6 +39,8 @@ pub struct ImageInput {
 
 #[wasm_bindgen]
 impl ImageInput {
+	///Converts the bytes of a file into an image format we can use.
+	///Can fail, and return a common JSError.
 	#[wasm_bindgen(js_name = from_bytes)]
 	pub fn from_bytes(bytes: Vec<u8>) -> Result<ImageInput, JsError> {
 		let format: ImageFormat = image::guess_format(&bytes)
@@ -46,6 +50,8 @@ impl ImageInput {
 		Ok(ImageInput { bytes, format })
 	}
 
+	///Takes an url and tries to wrap it.
+	///Can fail.
 	#[wasm_bindgen(js_name = from_data_url)]
 	pub fn from_data_url(data_url: &str) -> Result<ImageInput, JsError> {
 		let payload: &str = data_url
@@ -59,16 +65,20 @@ impl ImageInput {
 		ImageInput::from_bytes(bytes)
 	}
 
+	///Returns the format of the image.
 	#[wasm_bindgen(getter)]
 	pub fn format(&self) -> String {
 		format!("{:?}", self.format)
 	}
 
+	///Returns the amount of bytes inside the image.
 	#[wasm_bindgen(getter)]
 	pub fn byte_length(&self) -> u32 {
 		self.bytes.len() as u32
 	}
 
+	///Return the bytes of the image.
+	///This operation is costly as it clones the bytes of the image, be careful where you use it.
 	#[wasm_bindgen(getter)]
 	pub fn bytes(&self) -> Vec<u8> {
 		self.bytes.clone()
@@ -76,11 +86,16 @@ impl ImageInput {
 }
 
 impl ImageInput {
-	fn as_bytes(&self) -> &[u8] {
+
+	///Returns an reference of the image bytes.
+	///This return lives only as long as the ImageInput does. So, in some situations where
+	///ownership is priority, use `bytes()` instead.
+	pub fn as_bytes(&self) -> &[u8] {
 		&self.bytes
 	}
 
-	fn detected_format(&self) -> ImageFormat {
+	///Returns the format of the image.
+	pub fn detected_format(&self) -> ImageFormat {
 		self.format
 	}
 }
@@ -266,7 +281,7 @@ fn detect_webp_is_lossy(d: &[u8]) -> Option<bool> {
 }
 
 
-/// This calculates de delay for a given gif. It helps us determine how many frames per
+/// This calculates the delay for a given gif. It helps us determine how many frames per
 /// second we use.
 fn gif_delay_to_ms(delay_cs: u16) -> u32 {
 	if delay_cs == 0 {
@@ -433,6 +448,10 @@ fn decode_to_dynamic_image(
 // Preview
 // ---------------------------------------------------------------------------
 
+///A Simple struct containing an aproximation of what a possible conversion will
+///entail. With it we can determine how we should treat a conversion, and if its
+///worth it.
+///It doesn't hold the original image data.
 #[wasm_bindgen(getter_with_clone)]
 pub struct WebpConversionPreview {
 	pub format: String,
@@ -448,6 +467,9 @@ pub struct WebpConversionPreview {
 	pub predicted_mode: String,
 }
 
+///Takes an ImageInput and guesses the possible outcomes.
+///Like what it is its quality, if its lossy, is it animated, and eve how much bytes we can
+///end up with.
 #[wasm_bindgen]
 pub fn preview_webp_conversion(
 	input: &ImageInput,
@@ -721,183 +743,4 @@ pub fn convert_image_to_webp_auto(
 		frame_count: 1,
 		quality: if lossy { lossy_q } else { 0 },
 	})
-}
-
-#[cfg(test)]
-pub mod tests {
-    use super::*;
-    use wasm_bindgen_test::*;
-
-	#[wasm_bindgen_test]
-	fn gif_delay_zero_becomes_100ms() {
-	    assert_eq!(gif_delay_to_ms(0), 100);
-	}
-	
-	#[wasm_bindgen_test]
-	fn gif_delay_ten_cs_becomes_100ms() {
-	    assert_eq!(gif_delay_to_ms(10), 100);
-	}
-	
-	#[wasm_bindgen_test]
-	fn gif_delay_nonzero_is_ten_times() {
-	    assert_eq!(gif_delay_to_ms(5), 50);
-	}
-	
-	#[wasm_bindgen_test]
-	fn jpeg_quality_estimator_is_monotone_in_sum() {
-	    let q_low: u8 = infer_jpeg_quality_from_quant_sum(500);
-	    let q_high: u8 = infer_jpeg_quality_from_quant_sum(5000);
-	    assert!(q_low > q_high);
-	}
-	
-	
-	// -- decode / detect --------------------------------------------------------
-	
-	#[wasm_bindgen_test]
-	fn rejects_unknown_format() {
-	    let bytes: Vec<u8> = vec![0xDE, 0xAD, 0xBE, 0xEF];
-	    let result: Result<ImageInput, JsError> = ImageInput::from_bytes(bytes);
-	    assert!(result.is_err());
-	}
-	
-	#[wasm_bindgen_test]
-	fn rejects_data_url_without_comma() {
-	    let result: Result<ImageInput, JsError> =
-	        ImageInput::from_data_url("data:image/png;base64");
-	    assert!(result.is_err());
-	}
-	
-	#[wasm_bindgen_test]
-	fn rejects_malformed_base64() {
-	    let result: Result<ImageInput, JsError> =
-	        ImageInput::from_data_url("data:image/png;base64,!!!!");
-	    assert!(result.is_err());
-	}
-	
-	#[wasm_bindgen_test]
-	fn detects_lossy_webp_magic() {
-	    let mut bytes: Vec<u8> = Vec::new();
-	    bytes.extend_from_slice(b"RIFF");
-	    bytes.extend_from_slice(&[0, 0, 0, 0]);
-	    bytes.extend_from_slice(b"WEBP");
-	    bytes.extend_from_slice(b"VP8 ");
-	    bytes.extend_from_slice(&[0, 0, 0, 0]);
-	    assert_eq!(detect_webp_is_lossy(&bytes), Some(true));
-	}
-	
-	
-	// -- end-to-end -------------------------------------------------------------
-	
-	#[wasm_bindgen_test]
-	fn converts_png_to_lossless_webp() {
-	    let png: Vec<u8> = make_tiny_png();
-	    let input: ImageInput = ImageInput::from_bytes(png).expect("valid png");
-	
-	    let mut outcome: WebpConversionOutcome =
-	        convert_image_to_webp_auto(&input, false).expect("convert");
-	
-	    assert_eq!(outcome.animated(), false);
-	    assert_eq!(outcome.frame_count(), 1);
-	    assert_eq!(outcome.mode(), "lossless");
-	
-	    let bytes: Vec<u8> = outcome.data();
-	    assert_eq!(&bytes[0..4], b"RIFF");
-	    assert_eq!(&bytes[8..12], b"WEBP");
-	}
-	
-	#[wasm_bindgen_test]
-	fn converts_png_to_webp_when_lossy_allowed() {
-	    let png: Vec<u8> = make_tiny_png();
-	    let input: ImageInput = ImageInput::from_bytes(png).expect("valid png");
-	
-	    let mut outcome: WebpConversionOutcome =
-	        convert_image_to_webp_auto(&input, true).expect("convert");
-	
-	    let mode: String = outcome.mode();
-	    assert!(mode == "lossy" || mode == "lossless");
-	
-	    let bytes: Vec<u8> = outcome.data();
-	    assert_eq!(&bytes[0..4], b"RIFF");
-	    assert_eq!(&bytes[8..12], b"WEBP");
-	}
-	
-	#[test]
-	fn converts_gif_to_animated_webp() {
-	    let gif: Vec<u8> = make_two_frame_gif();
-	    let input: ImageInput = ImageInput::from_bytes(gif).expect("valid gif");
-	
-	    let mut outcome: WebpConversionOutcome =
-	        convert_image_to_webp_auto(&input, true).expect("convert");
-	
-	    assert!(outcome.animated());
-	    assert_eq!(outcome.frame_count(), 2);
-	
-	    let bytes: Vec<u8> = outcome.data();
-	    assert_eq!(&bytes[0..4], b"RIFF");
-	    assert_eq!(&bytes[12..16], b"VP8X");
-	}
-	
-	#[wasm_bindgen_test]
-	fn bytes_saved_saturates_at_zero() {
-	    let png: Vec<u8> = make_tiny_png();
-	    let input: ImageInput = ImageInput::from_bytes(png).expect("valid png");
-	    let outcome: WebpConversionOutcome =
-	        convert_image_to_webp_auto(&input, true).expect("convert");
-	
-	    let saved: u32 = outcome.bytes_saved();
-	    let webp: u32 = outcome.webp_bytes();
-	    let original: u32 = outcome.original_bytes();
-	
-	    assert_eq!(saved.saturating_add(webp), original);
-	}
-	
-	#[wasm_bindgen_test]
-	fn co2_saved_is_non_negative() {
-	    let png: Vec<u8> = make_tiny_png();
-	    let input: ImageInput = ImageInput::from_bytes(png).expect("valid png");
-	    let outcome: WebpConversionOutcome =
-	        convert_image_to_webp_auto(&input, true).expect("convert");
-	
-	    assert!(outcome.co2_saved_grams() >= 0.0);
-	}
-	
-	
-	// -- fixtures ---------------------------------------------------------------
-	
-	fn make_tiny_png() -> Vec<u8> {
-	    use image::{ImageBuffer, Rgba};
-	    let img: ImageBuffer<Rgba<u8>, Vec<u8>> =
-	        ImageBuffer::from_pixel(2, 2, Rgba([255, 0, 0, 255]));
-	    let mut out: Vec<u8> = Vec::new();
-	    img.write_to(
-	        &mut std::io::Cursor::new(&mut out),
-	        image::ImageFormat::Png,
-	    )
-	    .expect("encode png");
-	    out
-	}
-	
-	fn make_two_frame_gif() -> Vec<u8> {
-	    let mut out: Vec<u8> = Vec::new();
-	    {
-	        let mut enc: gif::Encoder<&mut Vec<u8>> =
-	            gif::Encoder::new(&mut out, 1, 1, &[]).expect("encoder");
-	        enc.set_repeat(gif::Repeat::Infinite).expect("repeat");
-	
-	        let mut f1: gif::Frame<'_> = gif::Frame::default();
-	        f1.width = 1;
-	        f1.height = 1;
-	        f1.buffer = std::borrow::Cow::Borrowed(&[255, 0, 0, 255]);
-	        f1.delay = 10;
-	        enc.write_frame(&f1).expect("frame 1");
-	
-	        let mut f2: gif::Frame<'_> = gif::Frame::default();
-	        f2.width = 1;
-	        f2.height = 1;
-	        f2.buffer = std::borrow::Cow::Borrowed(&[0, 0, 255, 255]);
-	        f2.delay = 10;
-	        enc.write_frame(&f2).expect("frame 2");
-	    }
-	    out
-	}
 }
