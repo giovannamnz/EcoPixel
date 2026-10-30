@@ -2,6 +2,12 @@ use image::{DynamicImage, ImageFormat, RgbImage, RgbaImage};
 use std::io::Cursor;
 use wasm_bindgen::prelude::*;
 use zenwebp::{EncodeRequest, LosslessConfig, LossyConfig, PixelLayout};
+use console_error_panic_hook;
+
+#[wasm_bindgen(start)]
+fn init() {
+    console_error_panic_hook::set_once();
+}
 
 #[cfg(test)]
 mod tests;
@@ -338,30 +344,22 @@ fn encode_webp_lossy(img: &DynamicImage, quality: u8) -> Result<Vec<u8>, String>
 	}
 }
 
-
-// ---------------------------------------------------------------------------
-// WebP encoding — animated GIF
-// ---------------------------------------------------------------------------
-
 /// Encodes a GIF directly into an animated WebP, streaming frames from the
 /// decoder into zenwebp's animation encoder.
 ///
 /// Returns `(webp_bytes, width, height, frame_count)`.
 fn encode_gif_to_animated_webp(input: &[u8]) -> Result<(Vec<u8>, u32, u32, u32), String> {
 	let mut opts: gif::DecodeOptions = gif::DecodeOptions::new();
-	opts.set_color_output(gif::ColorOutput::RGBA);
+	opts.set_color_output(gif::ColorOutput::Indexed);
 
 	let mut decoder: gif::Decoder<Cursor<&[u8]>> = opts
 		.read_info(Cursor::new(input))
 		.map_err(|e: gif::DecodingError| e.to_string())?;
 
-	let first: &gif::Frame = decoder
-		.read_next_frame()
-		.map_err(|e: gif::DecodingError| e.to_string())?
-		.ok_or_else(|| "gif has no frames".to_string())?;
+	let width = decoder.width() as u32;
+	let height = decoder.height() as u32;
 
-	let width: u32 = first.width as u32;
-	let height: u32 = first.height as u32;
+	let global_palette = decoder.global_palette().map(|p| p.to_vec());
 
 	let config: zenwebp::mux::AnimationConfig =
 		zenwebp::mux::AnimationConfig::default();
@@ -370,32 +368,105 @@ fn encode_gif_to_animated_webp(input: &[u8]) -> Result<(Vec<u8>, u32, u32, u32),
 		zenwebp::mux::AnimationEncoder::new(width, height, config)
 			.map_err(|e| e.to_string())?;
 
+	// Slightly tuned lossy quality to balance visual fidelity and massive size reduction
 	let encoder_config: zenwebp::EncoderConfig =
-		zenwebp::EncoderConfig::new_lossy();
+		zenwebp::EncoderConfig::new_lossy().with_quality(75.0);
 
 	let mut timestamp_ms: u32 = 0;
 	let mut frame_count: u32 = 0;
+	let mut first_delay_ms = 100;
 
-	encoder
-		.add_frame(
-			&first.buffer,
-			PixelLayout::Rgba8,
-			timestamp_ms,
-			&encoder_config,
-		)
-		.map_err(|e| e.to_string())?;
+	// Persistent canvas to carry over unchanging background pixels across frames
+	let mut canvas = vec![0u8; (width * height * 4) as usize];
 
-	let first_delay_ms: u32 = gif_delay_to_ms(first.delay);
-	timestamp_ms += first_delay_ms;
-	frame_count += 1;
+	// A backup of the canvas to support DisposalMethod::Previous
+	let mut previous_canvas = canvas.clone();
 
+	// While there are frames in the gif convert them.
 	while let Some(frame) = decoder
 		.read_next_frame()
 		.map_err(|e: gif::DecodingError| e.to_string())?
 	{
+		if frame_count == 0 {
+			first_delay_ms = gif_delay_to_ms(frame.delay);
+		}
+
+		// Save state before modifying if disposal is Previous
+		if frame.dispose == gif::DisposalMethod::Previous {
+			previous_canvas.copy_from_slice(&canvas);
+		}
+
+		let palette: &[u8] = match &frame.palette {
+			Some(p) => p,
+			None => global_palette
+				.as_deref()
+				.ok_or_else(|| "gif frame has no color palette".to_string())?,
+		};
+
+		let f_width = frame.width as usize;
+		let f_height = frame.height as usize;
+		let f_left = frame.left as usize;
+		let f_top = frame.top as usize;
+		let transparent_idx = frame.transparent;
+
+		// Handle disposal of the *previous* frame's impact
+		match frame.dispose {
+			gif::DisposalMethod::Background => {
+				for y in 0..f_height {
+					let target_y = f_top + y;
+					if target_y >= height as usize { break; }
+					for x in 0..f_width {
+						let target_x = f_left + x;
+						if target_x >= width as usize { continue; }
+						let target_idx = (target_y * width as usize + target_x) * 4;
+						canvas[target_idx..target_idx + 4].copy_from_slice(&[0, 0, 0, 0]);
+					}
+				}
+			}
+			gif::DisposalMethod::Previous => {
+				canvas.copy_from_slice(&previous_canvas);
+			}
+			_ => {}
+		}
+
+
+		for y in 0..f_height {
+			let target_y = f_top + y;
+			if target_y >= height as usize {
+				break;
+			}
+
+			for x in 0..f_width {
+				let target_x = f_left + x;
+				if target_x >= width as usize {
+					continue;
+				}
+
+				let src_idx = y * f_width + x;
+				if src_idx >= frame.buffer.len() {
+					break;
+				}
+
+				let color_index = frame.buffer[src_idx] as usize;
+				
+				if Some(color_index as u8) == transparent_idx {
+					continue;
+				}
+
+				let palette_offset = color_index * 3;
+				if palette_offset + 2 < palette.len() {
+					let target_idx = (target_y * width as usize + target_x) * 4;
+					canvas[target_idx]     = palette[palette_offset];     // R
+					canvas[target_idx + 1] = palette[palette_offset + 1]; // G
+					canvas[target_idx + 2] = palette[palette_offset + 2]; // B
+					canvas[target_idx + 3] = 255;                         // A
+				}
+			}
+		}
+
 		encoder
 			.add_frame(
-				&frame.buffer,
+				&canvas,
 				PixelLayout::Rgba8,
 				timestamp_ms,
 				&encoder_config,
@@ -406,30 +477,16 @@ fn encode_gif_to_animated_webp(input: &[u8]) -> Result<(Vec<u8>, u32, u32, u32),
 		frame_count += 1;
 	}
 
-	let last_frame_duration_ms: u32 = if frame_count == 1 {
-		first_delay_ms
-	} else {
-		gif_delay_to_ms(
-			decoder
-				.read_next_frame()
-				.ok()
-				.flatten()
-				.map(|f: &gif::Frame| f.delay)
-				.unwrap_or(10),
-		)
-	};
+	if frame_count == 0 {
+		return Err("gif has no frames".to_string());
+	}
 
 	let data: Vec<u8> = encoder
-		.finalize(last_frame_duration_ms)
+		.finalize(first_delay_ms)
 		.map_err(|e| format!("{e:?}"))?;
 
 	Ok((data, width, height, frame_count))
 }
-
-
-// ---------------------------------------------------------------------------
-// Decoding (still path)
-// ---------------------------------------------------------------------------
 
 fn decode_to_dynamic_image(
 	input: &[u8],
