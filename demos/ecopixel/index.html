@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EcoPixel: otimize imagens e reduza o CO₂</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌱%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+<span class="badge">🌱 100% no seu navegador</span>
+<h1>Eco<span>Pixel</span></h1>
+<p class="lead">Converta imagens JPEG, PNG, ou GIF para WebP, veja quanto você economizou e quanto CO₂ deixou de ser emitido. Suas imagens nunca saem do seu dispositivo.</p>
+
+<div id="drop" tabindex="0" role="button" aria-label="Escolher imagens">
+  <strong>Arraste imagens aqui ou clique para escolher</strong>
+  <small>JPEG, PNG, ou GIF · várias de uma vez</small>
+  <input id="file" type="file" accept="image/jpeg,image/png" multiple hidden>
+</div>
+<div class="opts">
+  <label><input id="lossy" type="checkbox" checked> Permitir compressão com perdas (arquivos menores)</label>
+</div>
+<div id="status" role="status">Carregando o núcleo WebAssembly…</div>
+<div id="totals"></div>
+<div id="list"></div>
+
+<div class="about">
+  <p><b>Como funciona:</b> o núcleo em Rust, compilado para WebAssembly, faz a conversão localmente. O CO₂ evitado segue o Sustainable Web Design Model: <code>E = ΔGB × 0,81 kWh/GB</code> e <code>CO₂e = E × 442 g/kWh</code>.</p>
+  <p>SSIM e PSNR são calculados aqui na página, em uma versão reduzida da imagem (até 512 px), então são valores aproximados.</p>
+</div>
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

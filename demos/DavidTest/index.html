@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>eco-pixel test</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
+    body { margin: 0 auto; padding: 24px; max-width: 1100px; }
+    h1 { margin: 0 0 4px; font-size: 1.4rem; }
+    .sub { margin: 0 0 20px; opacity: .7; }
+    .controls { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .panels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .panel { border: 1px solid #8884; border-radius: 8px; padding: 12px; min-height: 260px; display: flex; flex-direction: column; gap: 8px; }
+    .panel h2 { margin: 0; font-size: 1rem; }
+    .preview { flex: 1; display: flex; align-items: center; justify-content: center; border-radius: 4px; overflow: hidden;
+      background: repeating-conic-gradient(#8882 0% 25%, transparent 0% 50%) 50% / 16px 16px; }
+    .preview img { max-width: 100%; max-height: 360px; }
+    .placeholder { opacity: .6; padding: 24px; }
+    #status { margin-top: 16px; min-height: 1.4em; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    td, th { text-align: left; padding: 6px 10px; border-bottom: 1px solid #8883; }
+    th { width: 35%; font-weight: 500; opacity: .75; }
+    .error { color: #d33; }
+    .good { color: #2a8; }
+    .bad { color: #c70; }
+    @media (max-width: 700px) { .panels { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <h1>eco-pixel test</h1>
+  <p class="sub">Pick an image. It is converted to WebP in your browser; nothing is uploaded.</p>
+
+  <div class="controls">
+    <input id="file" type="file" accept="image/*">
+    <label><input id="lossy" type="checkbox" checked> Allow lossy</label>
+  </div>
+
+  <div class="panels">
+    <section class="panel">
+      <h2>Original</h2>
+      <div class="preview">
+        <span class="placeholder" id="orig-ph">No image yet</span>
+        <img id="orig-img" alt="Original image" hidden>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>WebP result</h2>
+      <div class="preview">
+        <span class="placeholder" id="out-ph">Result appears here</span>
+        <img id="out-img" alt="WebP result" hidden>
+      </div>
+      <a id="download" hidden>Download WebP</a>
+    </section>
+  </div>
+
+  <div id="status">Loading WASM…</div>
+
+  <table id="stats" hidden>
+    <tbody></tbody>
+  </table>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
