@@ -1,0 +1,15 @@
+{
+  "name": "eco-pixel",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "eco_pixel_bg.wasm",
+    "eco_pixel.js",
+    "eco_pixel.d.ts"
+  ],
+  "main": "eco_pixel.js",
+  "types": "eco_pixel.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

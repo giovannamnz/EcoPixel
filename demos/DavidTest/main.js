@@ -2,7 +2,7 @@ import init, {
   ImageInput,
   preview_webp_conversion,
   convert_image_to_webp_auto,
-} from "../pkg/eco_pixel.js";
+} from "./pkg/eco_pixel.js";
 
 const $ = (id) => document.getElementById(id);
 const fileEl = $("file");

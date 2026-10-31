@@ -1,4 +1,4 @@
-import init,{ImageInput,convert_image_to_webp_auto} from "../pkg/eco_pixel.js";
+import init,{ImageInput,convert_image_to_webp_auto} from "./pkg/eco_pixel.js";
 const $=id=>document.getElementById(id);
 const drop=$("drop"),fileEl=$("file"),lossyEl=$("lossy"),statusEl=$("status"),listEl=$("list"),totalsEl=$("totals");
 let appReady=false,runId=0,urls=[],lastFiles=[];
