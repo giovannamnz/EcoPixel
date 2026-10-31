@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EcoPixel</title>
+  <noscript><meta http-equiv="refresh" content="0; url=en/"></noscript>
+  <script>
+    // Open the book in the language the visitor chose last time, otherwise in the browser's
+    // language (Portuguese if it starts with "pt"), otherwise in English.
+    (function () {
+      var target = "en";
+      try {
+        var saved = localStorage.getItem("ecopixel-lang");
+        if (saved === "en" || saved === "pt-br") {
+          target = saved;
+        } else if (/^pt/i.test(navigator.language || "")) {
+          target = "pt-br";
+        }
+      } catch (e) {
+        if (/^pt/i.test(navigator.language || "")) { target = "pt-br"; }
+      }
+      location.replace(target + "/");
+    })();
+  </script>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 30rem; margin: 4rem auto; padding: 0 1rem; line-height: 1.5; }
+    a { margin-right: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>EcoPixel</h1>
+  <p><a href="en/">English</a> <a href="pt-br/">Português (Brasil)</a></p>
+</body>
+</html>
