@@ -1,0 +1,13 @@
+[book]
+title = "EcoPixel"
+description = "Convert images to WebP in the browser and estimate the CO2 saved."
+src = "src"
+language = "en"
+
+[build]
+build-dir = "../site/en"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "ayu"
+additional-js = ["lang-switcher.js"]

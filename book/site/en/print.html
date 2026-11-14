@@ -1,0 +1,729 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>EcoPixel</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Convert images to WebP in the browser and estimate the CO2 saved.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-e96d0476.css">
+        <link rel="stylesheet" href="css/chrome-d279d366.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "ayu";
+            window.path_to_searchindex_js = "searchindex-9e8bdc9b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-59f076d8.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">EcoPixel</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="ecopixel"><a class="header" href="#ecopixel">EcoPixel</a></h1>
+<p>EcoPixel converts images to <a href="https://developers.google.com/speed/webp">WebP</a> <strong>on the
+visitor’s device</strong> and tells you how much CO₂ the smaller upload avoided.</p>
+<p>It is written in Rust and compiled to WebAssembly, so a website can call it from JavaScript.
+It can also be used as an ordinary Rust crate.</p>
+<h2 id="why-convert-in-the-browser"><a class="header" href="#why-convert-in-the-browser">Why convert in the browser?</a></h2>
+<p>Normally the browser uploads the original PNG or JPEG and the server converts it, if anything
+converts it at all. If the browser converts the image first, a smaller file travels over the
+network and the server has less to do. The amount of data that did not have to travel is what
+the CO₂ figure is based on.</p>
+<p>The figure is an <strong>estimate</strong>, not a measurement. See <a href="#the-co₂-estimate">The CO₂ estimate</a> for exactly
+what it counts.</p>
+<h2 id="what-it-does"><a class="header" href="#what-it-does">What it does</a></h2>
+<ul>
+<li>Reads PNG, JPEG, GIF, BMP, TIFF and WebP files, given as bytes or as a data URL.</li>
+<li>Converts them to WebP: lossless, lossy, or picked automatically.</li>
+<li>Turns animated GIFs into animated WebP.</li>
+<li>Reports the original size, the new size, the bytes saved and the estimated CO₂ saved.</li>
+<li>Runs entirely on the visitor’s device. Nothing is uploaded by the library.</li>
+</ul>
+<h2 id="the-flow-in-four-steps"><a class="header" href="#the-flow-in-four-steps">The flow in four steps</a></h2>
+<ol>
+<li><strong>Wrap the file</strong> with <code>ImageInput</code>. This detects the format.</li>
+<li><strong>Optionally preview</strong> the conversion. It gives a quick size estimate without encoding.</li>
+<li><strong>Convert</strong> the image. You get the WebP bytes and the statistics.</li>
+<li><strong>Use the result.</strong> Upload the WebP, or the original file if the WebP turned out not to be
+smaller.</li>
+</ol>
+<p>Continue with <a href="#building-the-package">Building the package</a>, or jump to the
+<a href="#quick-start-javascript">Quick start</a> if you already have the built package.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="building-the-package"><a class="header" href="#building-the-package">Building the package</a></h1>
+<p>EcoPixel is compiled to WebAssembly with <a href="https://rustwasm.github.io/wasm-pack/"><code>wasm-pack</code></a>,
+which also generates the JavaScript wrapper and the TypeScript type definitions.</p>
+<h2 id="prerequisites"><a class="header" href="#prerequisites">Prerequisites</a></h2>
+<p>You need a Rust toolchain, the WebAssembly target and <code>wasm-pack</code>:</p>
+<pre><code class="language-bash">rustup target add wasm32-unknown-unknown
+cargo install wasm-pack
+</code></pre>
+<h2 id="build"><a class="header" href="#build">Build</a></h2>
+<p>Run this in the crate’s folder:</p>
+<pre><code class="language-bash">wasm-pack build --target web --release
+</code></pre>
+<p>The result is a <code>pkg/</code> folder containing:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>File</th><th>What it is</th></tr>
+</thead>
+<tbody>
+<tr><td><code>eco_pixel_bg.wasm</code></td><td>The compiled library</td></tr>
+<tr><td><code>eco_pixel.js</code></td><td>JavaScript glue code; this is what you import</td></tr>
+<tr><td><code>eco_pixel.d.ts</code></td><td>TypeScript types, including the documentation comments</td></tr>
+<tr><td><code>package.json</code></td><td>Package metadata, so the folder can be published or installed</td></tr>
+</tbody>
+</table>
+</div>
+<p>Rebuild after every change to the Rust code, and hard-refresh the page (Ctrl+F5) so the
+browser doesn’t use a cached copy.</p>
+<h2 id="choosing-a-target"><a class="header" href="#choosing-a-target">Choosing a target</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th><code>--target</code></th><th>Use it for</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>web</code></td><td>Plain browsers, Vite, Web Workers</td><td>Call <code>await init()</code> once before using anything</td></tr>
+<tr><td><code>bundler</code></td><td>Webpack, and bundlers with WebAssembly support</td><td>No <code>init()</code> call; needs a bundler that can import <code>.wasm</code> files</td></tr>
+<tr><td><code>nodejs</code></td><td>Node.js scripts</td><td>Not useful for converting images in the visitor’s browser</td></tr>
+</tbody>
+</table>
+</div>
+<p>This book uses <code>web</code>.</p>
+<h2 id="serving-the-files"><a class="header" href="#serving-the-files">Serving the files</a></h2>
+<p>Browsers refuse to load WebAssembly from a page opened with <code>file://</code>. Serve the folder over
+HTTP with any static file server. For example:</p>
+<pre><code class="language-bash">python -m http.server 8080
+</code></pre>
+<p>Then open <code>http://localhost:8080/</code>. The server must send <code>.wasm</code> files with the content type
+<code>application/wasm</code>. Most static servers do this, and it is the first thing to check if the
+module fails to load.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="quick-start-javascript"><a class="header" href="#quick-start-javascript">Quick start (JavaScript)</a></h1>
+<p>This page is a complete example: pick an image, convert it to WebP, and show how much was
+saved. It assumes you have built the package (see <a href="#building-the-package">Building the package</a>) and
+that the <code>pkg/</code> folder sits next to your HTML file.</p>
+<pre><code class="language-html">&lt;input id="file" type="file" accept="image/*"&gt;
+&lt;p id="result"&gt;&lt;/p&gt;
+
+&lt;script type="module"&gt;
+  import init, { ImageInput, convert_image_to_webp_auto } from "./pkg/eco_pixel.js";
+
+  await init(); // load the WebAssembly module once
+
+  document.getElementById("file").addEventListener("change", async (event) =&gt; {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      // 1. Wrap the file bytes.
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      const input = ImageInput.from_bytes(bytes);
+
+      // 2. Convert. `true` means lossy compression is allowed.
+      const outcome = convert_image_to_webp_auto(input, true);
+
+      // 3. Take the WebP bytes. Read `data` once.
+      const webp = outcome.data;
+      const blob = new Blob([webp], { type: "image/webp" });
+
+      // 4. Upload the WebP only if it is really smaller.
+      const toUpload = outcome.is_smaller ? blob : file;
+      // await fetch("/upload", { method: "POST", body: toUpload });
+
+      document.getElementById("result").textContent =
+        `${outcome.original_bytes} -&gt; ${outcome.webp_bytes} bytes ` +
+        `(${outcome.mode}), about ${outcome.co2_saved_grams.toFixed(4)} g CO2e saved`;
+    } catch (e) {
+      document.getElementById("result").textContent = `Conversion failed: ${e.message ?? e}`;
+    }
+  });
+&lt;/script&gt;
+</code></pre>
+<h2 id="what-happened"><a class="header" href="#what-happened">What happened</a></h2>
+<ul>
+<li><code>init()</code> downloads and starts the WebAssembly module. Call it once, before anything else.</li>
+<li><code>ImageInput.from_bytes</code> checks which image format the file is.</li>
+<li><code>convert_image_to_webp_auto(input, true)</code> does the conversion. The second argument says
+whether lossy compression is allowed; see <a href="#lossy-or-lossless">Lossy or lossless?</a>.</li>
+<li><code>outcome.data</code> holds the WebP file. It can be read only once; see
+<a href="#memory-and-free">Memory and free()</a>.</li>
+<li><code>outcome.is_smaller</code> tells you whether converting actually helped. A WebP is not always
+smaller than the original, so upload the original when it is <code>false</code>.</li>
+</ul>
+<h2 id="showing-an-estimate-first"><a class="header" href="#showing-an-estimate-first">Showing an estimate first</a></h2>
+<p>To show a rough size before converting, call <code>preview_webp_conversion</code>. It reads only the
+file header and does not encode anything:</p>
+<pre><code class="language-js">import { preview_webp_conversion } from "./pkg/eco_pixel.js";
+
+const preview = preview_webp_conversion(input, true);
+console.log(preview.estimated_webp_bytes, preview.confidence);
+</code></pre>
+<p>The numbers come from fixed rules of thumb per format, so treat them as a guess.</p>
+<h2 id="keep-the-page-responsive"><a class="header" href="#keep-the-page-responsive">Keep the page responsive</a></h2>
+<p>Conversion is a normal synchronous call, so a large image can freeze the page for a moment.
+For big images, load the module and run the conversion inside a
+<a href="https://developer.mozilla.org/docs/Web/API/Web_Workers_API">Web Worker</a>, and pass the bytes
+to it with <code>postMessage</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="using-it-from-rust"><a class="header" href="#using-it-from-rust">Using it from Rust</a></h1>
+<p>The crate is built as both a WebAssembly library and a normal Rust library (<code>rlib</code>), so you can
+call the same functions from Rust code, for example in a command-line tool.</p>
+<h2 id="example"><a class="header" href="#example">Example</a></h2>
+<p>This example uses only the standard library to read and write files:</p>
+<pre><code class="language-rust ignore">use eco_pixel::{convert_image_to_webp_auto, ImageInput};
+
+fn main() {
+    // Read any supported image file from disk.
+    let bytes: Vec&lt;u8&gt; = std::fs::read("photo.png").expect("could not read photo.png");
+
+    let input = ImageInput::from_bytes(bytes).expect("not a recognised image");
+    let mut outcome = convert_image_to_webp_auto(&amp;input, true).expect("conversion failed");
+
+    println!("{} -&gt; {} bytes", outcome.original_bytes(), outcome.webp_bytes());
+    println!("~{:.6} g CO2e saved (estimate)", outcome.co2_saved_grams());
+
+    // Keep the WebP only when it is actually smaller than the original.
+    if outcome.is_smaller() {
+        std::fs::write("photo.webp", outcome.data()).expect("could not write photo.webp");
+    } else {
+        println!("The WebP is not smaller, keep the original file.");
+    }
+}</code></pre>
+<h2 id="differences-from-javascript"><a class="header" href="#differences-from-javascript">Differences from JavaScript</a></h2>
+<ul>
+<li>Getters are plain methods: <code>outcome.is_smaller()</code> in Rust, <code>outcome.is_smaller</code> in
+JavaScript.</li>
+<li><code>outcome.data()</code> takes <code>&amp;mut self</code>, because the bytes are moved out. It can be called once;
+later calls return an empty <code>Vec</code>.</li>
+<li>Nothing needs to be freed. Rust drops the values when they go out of scope.</li>
+</ul>
+<h2 id="errors-work-best-in-the-browser"><a class="header" href="#errors-work-best-in-the-browser">Errors work best in the browser</a></h2>
+<p>Functions that can fail return <code>Result&lt;_, JsError&gt;</code>. A <code>JsError</code> can only be created inside
+WebAssembly. When the crate runs as a normal native program, a failing call, such as passing
+bytes that are not an image, <strong>panics</strong> instead of returning an <code>Err</code>. The success path works
+normally on native targets. See <a href="#limitations">Limitations</a>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="core-concepts"><a class="header" href="#core-concepts">Core concepts</a></h1>
+<p>There are three things to know: the input, the preview and the outcome.</p>
+<h2 id="imageinput"><a class="header" href="#imageinput">ImageInput</a></h2>
+<p><code>ImageInput</code> wraps the raw bytes of an image file and remembers which format they are.</p>
+<pre><code class="language-js">const input = ImageInput.from_bytes(new Uint8Array(await file.arrayBuffer()));
+console.log(input.format);      // for example "Png", "Jpeg", "Gif", "WebP"
+console.log(input.byte_length); // size in bytes
+</code></pre>
+<p>If you have the image as a data URL (<code>data:image/png;base64,...</code>), use
+<code>ImageInput.from_data_url(url)</code> instead. When you start from a <code>File</code>, prefer <code>from_bytes</code>: it
+skips the base64 step and its roughly 33% size overhead.</p>
+<p>Creating an <code>ImageInput</code> only detects the format. The pixels are decoded later, during
+conversion. A corrupt image can therefore pass this step and fail at conversion.</p>
+<p>The same <code>ImageInput</code> can be used for several calls, for example a preview followed by a
+conversion, or conversions with lossy on and off.</p>
+<h2 id="the-preview"><a class="header" href="#the-preview">The preview</a></h2>
+<p><code>preview_webp_conversion(input, allowLossy)</code> returns a quick forecast without encoding
+anything. It reads only the header of the image, so it is fast even for large files.</p>
+<p>It tells you the dimensions, whether the source is already lossy, the estimated quality of a
+JPEG, whether the image is animated, and a rough guess of the WebP size, with a <code>confidence</code>
+of <code>"low"</code> or <code>"medium"</code>.</p>
+<p>The size guess comes from fixed ratios per format, not from real encoding. Use it to show an
+estimate or to decide whether a conversion is worth running, and rely on the outcome for real
+numbers.</p>
+<h2 id="the-outcome"><a class="header" href="#the-outcome">The outcome</a></h2>
+<p><code>convert_image_to_webp_auto(input, allowLossy)</code> does the conversion and returns an outcome. It
+holds:</p>
+<ul>
+<li>the WebP file (<code>data</code>),</li>
+<li>sizes: <code>original_bytes</code>, <code>webp_bytes</code> and <code>bytes_saved</code>,</li>
+<li>the image <code>width</code> and <code>height</code>,</li>
+<li>how it was encoded: <code>mode</code> (<code>"lossy"</code> or <code>"lossless"</code>), <code>quality</code>, <code>animated</code> and
+<code>frame_count</code>,</li>
+<li><code>is_smaller</code>, which tells you whether the WebP beat the original,</li>
+<li><code>co2_saved_grams</code>, the estimated CO₂ saved.</li>
+</ul>
+<p>Always check <code>is_smaller</code> before uploading the WebP. When it is <code>false</code>, the original file is
+the better choice, and <code>bytes_saved</code> and <code>co2_saved_grams</code> are <code>0</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="lossy-or-lossless"><a class="header" href="#lossy-or-lossless">Lossy or lossless?</a></h1>
+<p>WebP can compress an image in two ways:</p>
+<ul>
+<li><strong>Lossless</strong> keeps every pixel exactly as it was. Files are bigger.</li>
+<li><strong>Lossy</strong> throws away some detail the eye barely notices. Files are much smaller, which
+suits photographs.</li>
+</ul>
+<p>The <code>allowLossy</code> argument of <code>convert_image_to_webp_auto</code> is <strong>permission</strong> to use lossy
+compression, not an order. With <code>false</code> the output is always lossless. With <code>true</code>, the
+library decides based on the source:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Source</th><th><code>allowLossy = false</code></th><th><code>allowLossy = true</code></th></tr>
+</thead>
+<tbody>
+<tr><td>JPEG</td><td>lossless</td><td>lossy, with a quality estimated from the JPEG itself (kept between 60 and 90)</td></tr>
+<tr><td>Lossy WebP</td><td>lossless</td><td>lossy, quality 80</td></tr>
+<tr><td>PNG, BMP, TIFF, lossless WebP</td><td>lossless</td><td>lossless first; if that is at most 70% of the original size it is kept, otherwise a lossy version (quality 80) is also tried and the smaller of the two wins</td></tr>
+<tr><td>GIF</td><td>animated lossy WebP (quality 75)</td><td>same; the flag has no effect</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="which-should-i-pass"><a class="header" href="#which-should-i-pass">Which should I pass?</a></h2>
+<ul>
+<li><strong>Photos and JPEGs:</strong> pass <code>true</code>. A lossless WebP made from a JPEG is usually much bigger
+than the JPEG, so lossless defeats the purpose.</li>
+<li><strong>Screenshots, logos and graphics (PNG):</strong> <code>true</code> is still fine. The library tries lossless
+first and only switches to lossy when lossless doesn’t shrink the file enough.</li>
+<li><strong>Anything that must stay pixel-exact:</strong> pass <code>false</code>.</li>
+</ul>
+<p>Converting a JPEG to lossy WebP compresses an already-lossy image a second time, which can
+add small extra artifacts. This is why the quality is estimated from the JPEG and kept within
+a sensible range.</p>
+<p>The <code>mode</code> and <code>quality</code> properties of the outcome tell you what was actually used.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="gif-and-animation"><a class="header" href="#gif-and-animation">GIF and animation</a></h1>
+<p>Animated GIFs are converted into <strong>animated WebP</strong> files, which current major browsers can
+display.</p>
+<pre><code class="language-js">const input = ImageInput.from_bytes(gifBytes);
+const outcome = convert_image_to_webp_auto(input, true);
+
+console.log(outcome.animated);    // true
+console.log(outcome.frame_count); // number of frames
+</code></pre>
+<h2 id="how-it-works"><a class="header" href="#how-it-works">How it works</a></h2>
+<ul>
+<li>The WebP is always lossy, at a fixed quality of 75. The <code>allowLossy</code> flag has no effect on
+GIFs.</li>
+<li>Frames are drawn onto one canvas the size of the GIF, so frames that only update part of
+the picture, and transparent pixels, are handled.</li>
+<li>GIF stores frame delays in hundredths of a second. A delay of <code>0</code> is treated as 100 ms,
+because taking it literally would make the animation play as fast as possible.</li>
+<li>The outcome reports <code>quality</code> as <code>0</code> for GIFs, because the quality is a fixed internal
+value, not something estimated from the file.</li>
+<li>The preview reports <code>animated</code> as <code>true</code> for every GIF, including a GIF with one frame.</li>
+</ul>
+<h2 id="check-your-own-gifs"><a class="header" href="#check-your-own-gifs">Check your own GIFs</a></h2>
+<p>GIF support is basic. Always compare the result with the original on a few of your own GIFs
+before relying on it. See <a href="#limitations">Limitations</a> for what is known to be rough.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="the-co₂-estimate"><a class="header" href="#the-co₂-estimate">The CO₂ estimate</a></h1>
+<p><code>co2_saved_grams</code> is the estimated mass of CO₂-equivalent that was <strong>not</strong> emitted because the
+WebP is smaller than the original.</p>
+<h2 id="the-formula"><a class="header" href="#the-formula">The formula</a></h2>
+<pre><code class="language-text">co2_saved_grams = bytes_saved / 1,000,000,000   (gigabytes)
+                  x 0.81                        (kWh per gigabyte transferred)
+                  x 442                         (grams of CO2e per kWh)
+</code></pre>
+<p>That is roughly <strong>0.36 g of CO₂e for every megabyte</strong> that did not have to be uploaded.</p>
+<p>The two constants follow the style of the Sustainable Web Design model. Check them against
+the current version of that model before quoting the numbers anywhere.</p>
+<h2 id="an-example"><a class="header" href="#an-example">An example</a></h2>
+<p>Converting a photo that saves 150 KB:</p>
+<pre><code class="language-text">150,000 / 1,000,000,000 x 0.81 x 442  =  about 0.054 g CO2e
+</code></pre>
+<p>That is tiny for one image. The idea is that it adds up: under the same assumptions, a million
+such images would avoid about 54 kg of CO₂e.</p>
+<h2 id="what-the-number-does-and-does-not-include"><a class="header" href="#what-the-number-does-and-does-not-include">What the number does and does not include</a></h2>
+<ul>
+<li>It counts only the <strong>network transfer</strong> that was avoided.</li>
+<li>It does <strong>not</strong> include the energy the visitor’s device spends doing the conversion.</li>
+<li>It is <code>0</code> whenever the WebP is not smaller than the original, so the library never claims
+savings it did not achieve.</li>
+<li>It is an estimate based on averages, not a measurement of any real network or power grid.</li>
+</ul>
+<p>When you show the number to users, label it as an estimate.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="memory-and-free"><a class="header" href="#memory-and-free">Memory and free()</a></h1>
+<p><code>ImageInput</code>, the preview and the outcome live in WebAssembly memory, not in the JavaScript
+heap. JavaScript only holds a small wrapper object that points to them.</p>
+<h2 id="do-i-have-to-call-free"><a class="header" href="#do-i-have-to-call-free">Do I have to call free()?</a></h2>
+<p>No. When the browser supports <code>FinalizationRegistry</code>, the generated JavaScript glue releases
+the memory automatically once the wrapper object is garbage collected. Calling <code>free()</code> is
+optional.</p>
+<p>It is still useful in two cases:</p>
+<ul>
+<li><strong>Large images.</strong> <code>free()</code> releases the memory immediately instead of whenever the garbage
+collector gets around to it.</li>
+<li><strong>Loops.</strong> The garbage collector cannot run in the middle of synchronous code. If you
+convert many images in one loop with no <code>await</code> inside it, the memory is not reclaimed until
+the loop ends, and a big batch can run out of memory. Call <code>free()</code> on each object, or
+<code>await</code> something inside the loop so cleanup can happen.</li>
+</ul>
+<pre><code class="language-js">input.free();
+outcome.free();
+</code></pre>
+<p>An object cannot be used after <code>free()</code>.</p>
+<h2 id="reading-the-data-only-once"><a class="header" href="#reading-the-data-only-once">Reading the data only once</a></h2>
+<p><code>outcome.data</code> hands the WebP bytes over instead of copying them. The first read returns the
+whole file and any later read returns an empty array. Read it once into a variable:</p>
+<pre><code class="language-js">const webp = outcome.data; // keep this
+</code></pre>
+<p>The other properties, such as <code>webp_bytes</code> and <code>co2_saved_grams</code>, keep working after <code>data</code>
+has been read.</p>
+<p>Similarly, <code>input.bytes</code> returns a <strong>copy</strong> of the original bytes every time it is read, which
+is slow for large files. You rarely need it, since you already have the bytes you passed in.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="javascript-api"><a class="header" href="#javascript-api">JavaScript API</a></h1>
+<p>Everything is exported from <code>pkg/eco_pixel.js</code>. TypeScript definitions are generated in
+<code>pkg/eco_pixel.d.ts</code>.</p>
+<pre><code class="language-js">import init, {
+  ImageInput,
+  preview_webp_conversion,
+  convert_image_to_webp_auto,
+} from "./pkg/eco_pixel.js";
+</code></pre>
+<h2 id="init"><a class="header" href="#init">init()</a></h2>
+<p>The default export. Loads the WebAssembly module. Call <code>await init()</code> once before anything
+else.</p>
+<h2 id="imageinput-1"><a class="header" href="#imageinput-1">ImageInput</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Member</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ImageInput.from_bytes(bytes: Uint8Array)</code></td><td>Wraps the bytes of an image file and detects the format. Throws if the format is not recognised.</td></tr>
+<tr><td><code>ImageInput.from_data_url(url: string)</code></td><td>Wraps an image given as a data URL. Everything after the first comma is decoded as standard base64. Throws if there is no comma, the base64 is invalid, or the format is not recognised.</td></tr>
+<tr><td><code>input.format</code></td><td>Detected format name, such as <code>"Png"</code>, <code>"Jpeg"</code>, <code>"Gif"</code> or <code>"WebP"</code>.</td></tr>
+<tr><td><code>input.byte_length</code></td><td>Size of the input in bytes.</td></tr>
+<tr><td><code>input.bytes</code></td><td>A copy of the input bytes. Slow for large files; avoid it in loops.</td></tr>
+<tr><td><code>input.free()</code></td><td>Optional. Releases the memory immediately.</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="preview_webp_conversioninput-allowlossy"><a class="header" href="#preview_webp_conversioninput-allowlossy">preview_webp_conversion(input, allowLossy)</a></h2>
+<p>Returns a forecast of the conversion without encoding anything. Throws if the image header
+can’t be read.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Property</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>format</code></td><td>Detected source format.</td></tr>
+<tr><td><code>width</code>, <code>height</code></td><td>Image size in pixels, read from the header.</td></tr>
+<tr><td><code>is_lossy</code></td><td><code>true</code> for JPEG and lossy WebP, <code>false</code> for GIF and lossless WebP, <code>undefined</code> when it can’t be told (PNG, BMP, TIFF, and others).</td></tr>
+<tr><td><code>jpeg_quality</code></td><td>Estimated quality (1-100) of a JPEG. <code>undefined</code> for other formats.</td></tr>
+<tr><td><code>animated</code></td><td><code>true</code> for GIF input.</td></tr>
+<tr><td><code>estimated_webp_bytes</code></td><td>Rough guess of the WebP size in bytes.</td></tr>
+<tr><td><code>estimated_ratio</code></td><td>Guessed WebP size divided by the original size. Above 1 means probably bigger.</td></tr>
+<tr><td><code>likely_smaller</code></td><td><code>true</code> when <code>estimated_ratio</code> is below 1.</td></tr>
+<tr><td><code>confidence</code></td><td><code>"low"</code> or <code>"medium"</code>.</td></tr>
+<tr><td><code>predicted_mode</code></td><td><code>"lossy"</code> or <code>"lossless"</code>. Also a guess.</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="convert_image_to_webp_autoinput-allowlossy"><a class="header" href="#convert_image_to_webp_autoinput-allowlossy">convert_image_to_webp_auto(input, allowLossy)</a></h2>
+<p>Converts the image and returns an outcome. See <a href="#lossy-or-lossless">Lossy or lossless?</a> for
+how <code>allowLossy</code> is used. Throws if the image can’t be decoded or encoded.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Property</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>data</code></td><td>The WebP file as a <code>Uint8Array</code>. <strong>Read once</strong>; later reads are empty.</td></tr>
+<tr><td><code>original_bytes</code></td><td>Size of the original file in bytes.</td></tr>
+<tr><td><code>webp_bytes</code></td><td>Size of the WebP file in bytes.</td></tr>
+<tr><td><code>width</code>, <code>height</code></td><td>Image size in pixels.</td></tr>
+<tr><td><code>mode</code></td><td><code>"lossy"</code> or <code>"lossless"</code>.</td></tr>
+<tr><td><code>quality</code></td><td>Lossy quality (0-100) used for a still image; <code>0</code> for lossless output and for GIFs.</td></tr>
+<tr><td><code>animated</code></td><td><code>true</code> when the output is an animated WebP.</td></tr>
+<tr><td><code>frame_count</code></td><td>Number of frames; <code>1</code> for still images.</td></tr>
+<tr><td><code>is_smaller</code></td><td><code>true</code> when the WebP is strictly smaller than the original.</td></tr>
+<tr><td><code>bytes_saved</code></td><td><code>original_bytes - webp_bytes</code>, never below <code>0</code>.</td></tr>
+<tr><td><code>co2_saved_grams</code></td><td>Estimated grams of CO₂e saved; see <a href="#the-co₂-estimate">The CO₂ estimate</a>.</td></tr>
+<tr><td><code>free()</code></td><td>Optional. Releases the memory immediately.</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="errors"><a class="header" href="#errors">Errors</a></h2>
+<p>Failures are thrown as ordinary JavaScript <code>Error</code> objects. Use <code>try</code>/<code>catch</code> and read
+<code>e.message</code>. See <a href="#errors-and-troubleshooting">Errors and troubleshooting</a> for the messages you may
+see.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="errors-and-troubleshooting"><a class="header" href="#errors-and-troubleshooting">Errors and troubleshooting</a></h1>
+<h2 id="messages-thrown-by-the-library"><a class="header" href="#messages-thrown-by-the-library">Messages thrown by the library</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Message starts with</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td><code>unknown format:</code></td><td>The bytes are not a recognised image format. Check that you passed the file contents.</td></tr>
+<tr><td><code>data url has no comma separator</code></td><td>The string is not a data URL. It should look like <code>data:image/png;base64,...</code>.</td></tr>
+<tr><td><code>invalid base64:</code></td><td>The part after the comma is not valid standard base64 (padding is required).</td></tr>
+<tr><td><code>header read failed:</code></td><td>The image header could not be read while previewing. The file may be corrupt or in an unsupported variant of its format.</td></tr>
+<tr><td><code>decode failed:</code></td><td>The image could not be decoded. The file may be corrupt or use a feature the decoder does not support.</td></tr>
+<tr><td><code>gif decode failed:</code></td><td>The GIF could not be read or converted, for example because it has no frames or a frame has no color palette.</td></tr>
+<tr><td><code>webp encode failed:</code></td><td>The WebP encoder reported an error.</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="common-problems"><a class="header" href="#common-problems">Common problems</a></h2>
+<p><strong>The module fails to load.</strong>
+Serve the page over HTTP instead of opening it with <code>file://</code>, and make sure <code>.wasm</code> files are
+sent as <code>application/wasm</code>. See <a href="#building-the-package">Building the package</a>.</p>
+<p><strong>An error about something being undefined right at the start.</strong>
+Make sure you <code>await init()</code> once before calling anything else.</p>
+<p><strong><code>RuntimeError: unreachable</code>.</strong>
+This is how a Rust panic looks in WebAssembly. The library installs a panic hook, so the
+actual panic message is printed in the browser console: open the developer tools and read the
+first error. After a panic the WebAssembly module can be left in an inconsistent state, so
+reload the page before trying again, and avoid calling <code>free()</code> on objects that were in use
+when it happened.</p>
+<p><strong><code>outcome.data</code> is empty.</strong>
+It was already read. <code>data</code> can be read only once; keep the first result in a variable. See
+<a href="#memory-and-free">Memory and free()</a>.</p>
+<p><strong>The WebP is bigger than the original.</strong>
+This happens, especially for lossless WebP made from a JPEG. Check <code>outcome.is_smaller</code> and
+upload the original file when it is <code>false</code>. Passing <code>true</code> for <code>allowLossy</code> usually avoids it
+for photos.</p>
+<p><strong>The page freezes during conversion.</strong>
+Conversion is synchronous. Run it in a Web Worker for large images; see the
+<a href="#quick-start-javascript">Quick start</a>.</p>
+<p><strong>The preview was far from the real size.</strong>
+That is expected sometimes. The preview uses fixed ratios per format and never encodes
+anything. Use the outcome for real numbers.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="limitations"><a class="header" href="#limitations">Limitations</a></h1>
+<p>Things to know before you rely on EcoPixel.</p>
+<h2 id="the-co₂-number-is-an-estimate"><a class="header" href="#the-co₂-number-is-an-estimate">The CO₂ number is an estimate</a></h2>
+<p>It is built from averages and counts only the avoided network transfer. It ignores the energy
+spent on the visitor’s device. See <a href="#the-co₂-estimate">The CO₂ estimate</a>.</p>
+<h2 id="a-webp-is-not-always-smaller"><a class="header" href="#a-webp-is-not-always-smaller">A WebP is not always smaller</a></h2>
+<p>Lossless WebP made from a JPEG is usually much bigger than the JPEG, and some images simply
+do not shrink. Always check <code>is_smaller</code>. How much lossy WebP saves compared with JPEG depends
+on the image and on how well the JPEG was compressed in the first place; do not assume a fixed
+percentage. Measure with your own images.</p>
+<h2 id="the-preview-is-a-guess"><a class="header" href="#the-preview-is-a-guess">The preview is a guess</a></h2>
+<p><code>preview_webp_conversion</code> uses fixed rules of thumb per format. It is meant for a rough
+indication only.</p>
+<h2 id="lossy-settings-are-fixed"><a class="header" href="#lossy-settings-are-fixed">Lossy settings are fixed</a></h2>
+<p>You choose whether lossy is allowed, but not the quality. The library picks it: estimated from
+the file for JPEGs (kept between 60 and 90), 80 for other lossy conversions and 75 for GIFs.</p>
+<h2 id="gif-support-is-basic"><a class="header" href="#gif-support-is-basic">GIF support is basic</a></h2>
+<ul>
+<li>Frames are drawn onto a canvas, but the GIF “disposal method” setting, which says what to do
+with a frame’s area before the next frame, is not applied precisely in the order the GIF
+specification describes. Some GIFs that rely on it may not look identical.</li>
+<li>The last frame of the animation is shown for as long as the first frame, instead of using its
+own delay.</li>
+</ul>
+<p>Test with your own GIFs before depending on the result.</p>
+<h2 id="errors-on-native-rust-targets"><a class="header" href="#errors-on-native-rust-targets">Errors on native Rust targets</a></h2>
+<p>Errors are <code>JsError</code> values, which can only be created inside WebAssembly. On a native target,
+a failing call panics instead of returning an <code>Err</code>. Use the crate from Rust mainly for the
+success path, or validate input before calling it. See <a href="#using-it-from-rust">Using it from Rust</a>.</p>
+<h2 id="one-thread-no-resizing"><a class="header" href="#one-thread-no-resizing">One thread, no resizing</a></h2>
+<p>Conversion runs on one thread and blocks until it finishes. The library only converts
+formats; it does not resize or crop images, so downscale very large images yourself if you do
+not need the full resolution.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-09f2665d.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-609e4cb8.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="lang-switcher-20a4a008.js"></script>
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+
+    </div>
+    </body>
+</html>
