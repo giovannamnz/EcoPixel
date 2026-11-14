@@ -293,11 +293,6 @@ fn decode_base64(s: &str) -> Result<Vec<u8>, String> {
 	Ok(out)
 }
 
-
-// ---------------------------------------------------------------------------
-// JPEG quality estimation
-// ---------------------------------------------------------------------------
-
 fn read_jpeg_luma_quant_sum(d: &[u8]) -> Option<u32> {
 	let mut i: usize = 2;
 
@@ -431,11 +426,6 @@ fn gif_delay_to_ms(delay_cs: u16) -> u32 {
 		delay_cs as u32 * 10
 	}
 }
-
-
-// ---------------------------------------------------------------------------
-// WebP encoding — still images
-// ---------------------------------------------------------------------------
 
 fn encode_webp_lossless(img: &DynamicImage) -> Result<Vec<u8>, String> {
 	let (w, h): (u32, u32) = (img.width(), img.height());
